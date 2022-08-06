@@ -23,44 +23,46 @@ class Node {
 
 class Solution {
     
-    public Node connect(Node root) {
-        if(root == null || root.left == null || root.right == null){
-            return root;
+    class QueueNode{
+        Node node;
+        int depth;
+        QueueNode(Node node, int depth){
+            this.node = node;
+            this.depth = depth;
         }
-        LinkedList<Node> queue = new LinkedList<>();
-        queue.addLast(root.left);
-        queue.addLast(root.right);
-        int cnt = 1;
-        int depth = 1;
-        while(!queue.isEmpty()){
-            // System.out.println("cnt: "+cnt+" depth: "+depth);
-            // printQueue(queue);
-            Node n1 = queue.poll();
-            Node n2 = queue.poll();
-            if(cnt == 1 && n1.left != null && n1.right != null){
-                queue.addLast(n1.left);
-                queue.addLast(n1.right);
-            }
-            if(n2.left != null && n2.right != null){
-                queue.addLast(n2.left);
-                queue.addLast(n2.right);
-            }
-            n1.next = n2;
-            cnt++;
-            if(cnt == Math.pow(2,depth)){
-                depth++;
-                cnt = 1;
-            } else{
-                queue.addFirst(n2);
-            }
-        }
-        return root;
     }
     
-    private void printQueue(LinkedList<Node> queue){
-        for(Node n : queue){
-            System.out.print(n.val+" ");
+    public Node connect(Node root) {
+        if(root == null || (root.left == null && root.right == null)){
+            return root;
         }
-        System.out.println();
+        
+        LinkedList<QueueNode> queue = new LinkedList<>();
+        if(root.left != null){
+            queue.offer(new QueueNode(root.left, 1));
+        }
+        if(root.right != null){
+            queue.offer(new QueueNode(root.right, 1));
+        }
+        QueueNode prev = null;
+        QueueNode now = null;
+        while(!queue.isEmpty()){
+            now = queue.poll();
+            if(now.node.left != null){
+                queue.offer(new QueueNode(now.node.left, now.depth+1));
+            }
+            if(now.node.right != null){
+                queue.offer(new QueueNode(now.node.right, now.depth+1));
+            }
+            if(prev == null){
+                prev = now;
+                continue;
+            }
+            if(now.depth == prev.depth){
+                prev.node.next = now.node;
+            }
+            prev = now;
+        }
+        return root;
     }
 }
