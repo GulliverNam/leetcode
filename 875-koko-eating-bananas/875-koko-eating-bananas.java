@@ -11,7 +11,7 @@ class Solution {
         } else if(length == 1){
             answer = (int)Math.ceil(piles[0] / (h*1.0));
         } else {
-            binarySearch(1, Integer.MAX_VALUE-1, h, piles);
+            binarySearch(1, 2000000000, h, piles);
         }
         return answer;
     }
